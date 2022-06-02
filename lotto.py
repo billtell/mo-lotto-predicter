@@ -1,22 +1,18 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Lotto
 
 # data source:https://www.molottery.com/numbers/winning_nums.jsp#Lotto
-Project Overview:
 
-*Obtain Historic Lottery Data
+#Project Overview:
 
-    *Format Data in Dataframe
+   #*Obtain Historic Lottery Data
 
-*Analyze / Visualize
+    #*Format Data in Dataframe
 
-*Make Predictions based on different assumptions
+    #*Analyze / Visualize
+
+    #*Make Predictions based on different assumptions
+      
+
 # # import and organize data into dataframe
-
-# In[ ]:
-
 
 import csv
 import numpy as np
@@ -32,33 +28,13 @@ df = pd.read_excel (r'lotto.xlsx', names= ['Draw Date',
                     '4of6','3of6']) 
 print (df)
 
-
-# In[ ]:
-
-
 new_df = df.drop(columns=['NumbersAsDrawn','Jackpot','6of6','5of6','4of6','3of6'], axis=1)
-
-
-# In[ ]:
 
 
 new_df[['Ball1','Ball2','Ball3','Ball4','Ball5','Ball6']]= new_df['NumbersInOrder'].str.split('--', expand=True)
 new_df.drop(0, inplace=True)
 
-
-# In[ ]:
-
-
 new_df
-
-
-# In[ ]:
-
-
-new_df.info()
-
-
-# In[ ]:
 
 
 new_df.Ball1 = new_df.Ball1.astype('int')
@@ -69,16 +45,10 @@ new_df.Ball5 = new_df.Ball5.astype('int')
 new_df.Ball6 = new_df.Ball6.astype('int')
 
 
-# In[ ]:
-
-
 new_df.info()
 
 
 # ## Analyze and Visualize Data 
-
-# In[ ]:
-
 
 #set figure parameters
 plt.rcParams['figure.figsize'] = [12.0, 8.0]
@@ -89,24 +59,13 @@ plt.rcParams['font.size'] = 12
 plt.rcParams['legend.fontsize'] = 'large'
 plt.rcParams['figure.titlesize'] = 'medium'
 
-
-# In[ ]:
-
-
 #statistical overview
 new_df.describe()
-
-
-# In[ ]:
-
 
 ax = sns.countplot(x="Ball1", data=new_df)
 plt.xlabel('Numbers Drawn')
 plt.ylabel('Count')
 plt.title('Ball 1 Distribution')
-
-
-# In[ ]:
 
 
 ax = sns.countplot(x="Ball2", data=new_df)
@@ -121,9 +80,6 @@ for ax, label in enumerate(ax.get_xticklabels()):
         label.set_visible(False)
 
 
-# In[ ]:
-
-
 ax = sns.countplot(x="Ball3", data=new_df)
 plt.xlabel('Numbers Drawn')
 plt.ylabel('Count')
@@ -133,9 +89,6 @@ for ax, label in enumerate(ax.get_xticklabels()):
         label.set_visible(True)
     else:
         label.set_visible(False)
-
-
-# In[ ]:
 
 
 ax = sns.countplot(x="Ball4", data=new_df)
@@ -148,17 +101,10 @@ for ax, label in enumerate(ax.get_xticklabels()):
     else:
         label.set_visible(False)
 
-
-# In[ ]:
-
-
 ax = sns.countplot(x="Ball5", data=new_df)
 plt.xlabel('Numbers Drawn')
 plt.ylabel('Count')
 plt.title('Ball 5 Distribution')
-
-
-# In[ ]:
 
 
 ax = sns.countplot(x="Ball6", data=new_df)
@@ -169,17 +115,11 @@ plt.title('Ball6 Distribution')
 
 # # Aggregate Ball1-Ball5 into a Total column
 
-# In[ ]:
-
-
 col_list= list(new_df.columns)
 col_list.remove('Draw Date')
 col_list.remove('NumbersInOrder')
 new_df['Total'] = new_df[col_list].sum(axis=1)
 new_df
-
-
-# In[ ]:
 
 
 ax = sns.countplot(x="Total", data=new_df)
@@ -193,39 +133,18 @@ for ax, label in enumerate(ax.get_xticklabels()):
     else:
         label.set_visible(False)
 
-
-# In[ ]:
-
-
 new_df.describe()
-
-
-# In[ ]:
 
 
 #for total: 68%, 1 std, of all totals are equal to approx 105 - 165
 #for total: 95%, 2 std, of all totals are equal to approx  75 - 195
-
-
-# In[ ]:
-
 
 #cases around the mean
 new_df.query('Total>130 & Total<140').head(15)
 
 
 # # examine spacing between numbers
-
-# In[ ]:
-
-
-#return to a little statistial analysis
-#look at difference between numbers
 diff_df = pd.DataFrame()
-
-
-# In[ ]:
-
 
 diff_df['Draw Date'] = new_df['Draw Date']
 diff_df['b2-b1'] = new_df['Ball2'] - new_df['Ball1']
@@ -236,32 +155,17 @@ diff_df['b6-b5'] = new_df['Ball6'] - new_df['Ball5']
 diff_df['b6-b1'] = new_df['Ball6'] - new_df['Ball1']
 diff_df
 
-
-# In[ ]:
-
-
 diff_df.describe()
-
-
-# In[ ]:
-
 
 ax = sns.countplot(x="b2-b1", data=diff_df)
 plt.xlabel('B2-B1 Difference')
 plt.ylabel('Count')
 plt.title('Ball2 - Ball1')
 
-
-# In[ ]:
-
-
 ax = sns.countplot(x="b3-b2", data=diff_df)
 plt.xlabel('B3-B2 Difference')
 plt.ylabel('Count')
 plt.title('Ball3 - Ball2')
-
-
-# In[ ]:
 
 
 ax = sns.countplot(x="b4-b3", data=diff_df)
@@ -270,25 +174,16 @@ plt.ylabel('Count')
 plt.title('Ball4 - Ball3')
 
 
-# In[ ]:
-
-
 ax = sns.countplot(x="b5-b4", data=diff_df)
 plt.xlabel('B5-B4 Difference')
 plt.ylabel('Count')
 plt.title('Ball5 - Ball4')
 
 
-# In[ ]:
-
-
 ax = sns.countplot(x="b6-b5", data=diff_df)
 plt.xlabel('B6-B5 Difference')
 plt.ylabel('Count')
 plt.title('Ball6 - Ball5')
-
-
-# In[ ]:
 
 
 ax = sns.countplot(x="b6-b1", data=diff_df)
@@ -301,23 +196,12 @@ plt.title('Total Difference')
 
 # # Approach 1: sort out recent numbers
 
-# #Assumption 1: Numers will not quickly repeat 
-
-# In[ ]:
-
 
 recent=new_df.head(14)
 recent
 
-
-# In[ ]:
-
-
 ln=sns.lineplot(data=recent, x="Draw Date", y="Total")
 plt.xticks(rotation=90)
-
-
-# In[ ]:
 
 
 #what has been happening lately
@@ -325,16 +209,9 @@ plt.xticks(rotation=90)
 recent.describe()
 
 
-# In[ ]:
-
-
 #use a for loop to sort out recent numbers 
 # recent is last 2 weeks
 #try 2 approaches : put all into 1 set or keep in separate groups
-
-
-# In[ ]:
-
 
 ball1_recent=list(set(recent.Ball1))
 ball2_recent=list(set(recent.Ball2))
@@ -366,21 +243,10 @@ for ball6_picks in range(14, 45):
 print(picks_v1)
 
 
-# In[ ]:
-
-
 picks_v1 = list(set(picks_v1))
 print(picks_v1, end = ' ')
 
-
-# In[ ]:
-
-
 len(picks_v1)
-
-
-# In[ ]:
-
 
 ball1_recent=list(set(recent.Ball1))
 ball2_recent=list(set(recent.Ball2))
@@ -417,25 +283,13 @@ for ball6_picks in range(14, 45):
 picks_total=list(picks_b1),list(picks_b2),list(picks_b3),list(picks_b4),list(picks_b5),list(picks_b6)
 
 
-# In[ ]:
-
-
 print(picks_b1)
-
-
-# In[ ]:
 
 
 print(picks_total)
 
 
-# In[ ]:
-
-
 import random
-
-
-# In[ ]:
 
 
 #recents sorted out
@@ -466,16 +320,10 @@ a_all = a+a1+a2+a3+a4+a5
 print("Sum of Selection:", sum(a_all))
 
 
-# In[ ]:
-
-
 sample_size = 6
 rand_select = [picks_v1[i] for i in sorted(random.sample(range(len(picks_v1)), sample_size))]
 print("Random Selection w/o recents:", rand_select)
 print("Sum of Selection:", sum(rand_select))
-
-
-# In[ ]:
 
 
 random_picks=sorted(random.sample(range(1,45), k=6)) 
@@ -485,16 +333,10 @@ print("Sum of Selection:", sum(random_picks))
 
 # # Approach 2: Index Position Sort
 
-# In[ ]:
-
-
 #instead of trying to sort out the recently drawn numbers, 
 #look for the ones that haven't been drawn in the longest time.
 #in other words, sort by index position
 #this is an extension of assumption 1:  numbers will not quickly repeat
-
-
-# In[ ]:
 
 
 Ball1=list(new_df.Ball1)
@@ -504,19 +346,12 @@ Ball4=list(new_df.Ball4)
 Ball5=list(new_df.Ball5)
 Ball6=list(new_df.Ball6)
 
-
-# In[ ]:
-
-
 key=(range(1,21))
 ball1_sort=[]
 for i in range (1,21):
     position = Ball1.index(i)+1
     ball1_sort.append(position)
 ball1_dict=dict(zip(key, ball1_sort))
-
-
-# In[ ]:
 
 
 b1_picks=[]
@@ -527,18 +362,12 @@ for value in sorted(ball1_dict.values()):
             print(key, value)
 
 
-# In[ ]:
-
-
 key=(range(2,31))
 ball2_sort=[]
 for i in range (2,31):
     position = Ball2.index(i)+1
     ball2_sort.append(position)
 ball2_dict=dict(zip(key, ball2_sort))
-
-
-# In[ ]:
 
 
 b2_picks=[]
@@ -549,18 +378,12 @@ for value in sorted(ball2_dict.values()):
             print(key, value)
 
 
-# In[ ]:
-
-
 key=(range(3,36))
 ball3_sort=[]
 for i in range (3,36):
     position = Ball3.index(i)+1
     ball3_sort.append(position)
 ball3_dict=dict(zip(key, ball3_sort))
-
-
-# In[ ]:
 
 
 b3_picks=[]
@@ -571,9 +394,6 @@ for value in sorted(ball3_dict.values()):
             print(key, value)
 
 
-# In[ ]:
-
-
 key=(range(6,41))
 ball4_sort=[]
 for i in range (6,41):
@@ -582,20 +402,12 @@ for i in range (6,41):
 ball4_dict=dict(zip(key, ball4_sort))
 ball4_dict
 
-
-# In[ ]:
-
-
 b4_picks=[]
 for value in sorted(ball4_dict.values()):
     for key in ball4_dict.keys():
         if ball4_dict[key] == value:
             b4_picks.append(key)
             print(key, value)
-
-
-# In[ ]:
-
 
 key=(range(11,44))
 ball5_sort=[]
@@ -606,19 +418,12 @@ ball5_dict=dict(zip(key, ball5_sort))
 ball5_dict
 
 
-# In[ ]:
-
-
 b5_picks=[]
 for value in sorted(ball5_dict.values()):
     for key in ball5_dict.keys():
         if ball5_dict[key] == value:
             b5_picks.append(key)
             print(key, value)
-
-
-# In[ ]:
-
 
 key=(range(18,45))
 ball6_sort=[]
@@ -628,10 +433,6 @@ for i in range (18,45):
 ball6_dict=dict(zip(key, ball6_sort))
 ball6_dict
 
-
-# In[ ]:
-
-
 b6_picks=[]
 for value in sorted(ball6_dict.values()):
     for key in ball6_dict.keys():
@@ -639,35 +440,14 @@ for value in sorted(ball6_dict.values()):
             b6_picks.append(key)
             print(key, value)
 
-
-# In[ ]:
-
-
 b1_all=b1_picks[:]
 print(b1_all)
-
-
-# In[ ]:
-
 
 b1_picks_recent=b1_picks[:5]
 print(b1_picks_recent)
 
-
-# In[ ]:
-
-
 b1_picks_oldest=b1_picks[-5:]
 print(b1_picks_oldest)
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
 
 
 #slice by index position
@@ -702,9 +482,6 @@ b6_picks_oldest=b6_picks[-6:] # don't use these
 b6_picks_all=b6_picks[:]
 
 
-# In[ ]:
-
-
 b1_picks_fresh=b1_picks[:8]
 b1_picks_ripe=b1_picks[8:]
 
@@ -725,8 +502,6 @@ b6_picks_ripe=b6_picks[11:]
 
 
 # #make predictions using the index position sort
-
-# In[ ]:
 
 
 #all middle index positions
@@ -756,9 +531,6 @@ x_all = x+x1+x2+x3+x4+x5
 print("Sum of Selection:", sum(x_all))
 
 
-# In[ ]:
-
-
 #ball1 and ball5 recent
 y=(random.sample(b1_picks_middle, k=1))
 while True:
@@ -784,9 +556,6 @@ while True:
 print("Random Selection variation 2:", y, y1, y2, y3, y4, y5)
 y_all = y+y1+y2+y3+y4+y5
 print("Sum of Selection:", sum(y_all))
-
-
-# In[ ]:
 
 
 z=(random.sample(b1_picks_middle, k=1))
@@ -817,13 +586,7 @@ print("Sum of Selection:", sum(z_all))
 
 # # Approach 3: find combinations to target Sums within 1 std
 
-# In[ ]:
-
-
 mean_sort=new_df.query('Total>105 & Total<165')
-
-
-# In[ ]:
 
 
 #sns.countplot xrange: 105 - 165
@@ -838,23 +601,11 @@ for ax, label in enumerate(ax.get_xticklabels()):
     else:
         label.set_visible(False)
 
-
-# In[ ]:
-
-
 #most popular sum
 new_df.query('Total==125').head(15)
 
-
-# In[ ]:
-
-
 #plug&play query
 new_df.query('Total==114')
-
-
-# In[ ]:
-
 
 # sort the Total index position
 total_sum=list(new_df.Total)
@@ -868,10 +619,6 @@ for i in range (105,165):
     except ValueError:
         print(i, "Not in list")
         continue
-
-
-# In[ ]:
-
 
 key=(range(105,165))
 total_sort=[]
@@ -891,16 +638,9 @@ for value in sorted(total_dict.values()):
             print(key, value)
 
 
-# In[ ]:
-
-
 #reminder!
 #for total: 68%, 1 std, of all totals are equal to approx 105 - 165
 #for total: 95%, 2 std, of all totals are equal to approx 75 - 195
-
-
-# In[ ]:
-
 
 import itertools
 
@@ -921,9 +661,6 @@ import itertools
 #targets: 115 , 157, 
 
 
-# In[ ]:
-
-
 #working from Ball6 down to Ball1 seemsed to work the best
 def gen_combo_target_v1(s):
     for a in b6_picks_all:
@@ -939,9 +676,6 @@ def gen_combo_target_v1(s):
                         yield ( s - a - b - c - d -e, e, d, c, b, a)
 
 
-# In[ ]:
-
-
 def gen_combo_target_v2(s):
     for a in b6_picks_middle:
         s2 = s - a
@@ -954,10 +688,6 @@ def gen_combo_target_v2(s):
                     for e in b2_picks_middle:
                         s6 = s5 - e
                         yield ( s - a - b - c - d -e, e, d, c, b, a)
-
-
-# In[ ]:
-
 
 def gen_combo_target_v3(s):
     for a in b6_picks_recent:
@@ -973,9 +703,6 @@ def gen_combo_target_v3(s):
                         yield ( s - a - b - c - d -e, e, d, c, b, a)
 
 
-# In[ ]:
-
-
 def gen_combo_target_v4(s):
     for a in b6_picks_all:
         s2 = s - a
@@ -989,41 +716,22 @@ def gen_combo_target_v4(s):
                         s6 = s5 - e
                         yield ( s - a - b - c - d -e, e, d, c, b, a)
 
-
-# In[ ]:
-
-
 combo_115=list(gen_combo_target_v2(115))
 combo_115_df = pd.DataFrame (combo_115, columns = ['Ball1', 'Ball2', 'Ball3', 'Ball4', 'Ball5', 'Ball6'])
 combo_115_df.query('Ball1<Ball2<Ball3<Ball4<Ball5<Ball6 & Ball1>0')
-
-
-# In[ ]:
 
 
 #explore
 combo_115_df.query('Ball1==4 & Ball1<Ball2<Ball3<Ball4<Ball5<Ball6 & Ball1>0')
 
 
-# In[ ]:
-
-
 combo_115_df.query('Ball1==6 & Ball1<Ball2<Ball3<Ball4<Ball5<Ball6 & Ball1>0')
-
-
-# In[ ]:
 
 
 combo_115_df.query('Ball1==2 & Ball1<Ball2<Ball3<Ball4<Ball5<Ball6 & Ball1>0')
 
 
-# In[ ]:
-
-
 random.sample(total_picks, k=1)
-
-
-# In[ ]:
 
 
 #combo_--- = list(gen_combo_target_v2(---)) 
